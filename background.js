@@ -9,9 +9,9 @@ chrome.runtime.onInstalled.addListener(() => {
 async function saveToNotion(pageData, apiKey, databaseId) {
   const { title, url, tags } = pageData;
   
-  // タグを配列に変換
+  // タグを配列に変換（改行区切り）
   const tagArray = tags
-    ? tags.split(',').map(tag => ({ name: tag.trim() })).filter(tag => tag.name)
+    ? tags.split('\n').map(tag => ({ name: tag.trim() })).filter(tag => tag.name)
     : [];
   
   const requestBody = {
