@@ -10,6 +10,44 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tagsInput = document.getElementById('tags');
   const savePageBtn = document.getElementById('save-page');
   const statusDiv = document.getElementById('status');
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  // タブ切り替え機能
+  function switchTab(targetTabId) {
+    // すべてのタブボタンとコンテンツから active クラスを削除
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+    tabContents.forEach(content => content.classList.remove('active'));
+    
+    // 選択されたタブボタンにactiveクラスを追加
+    const activeButton = document.querySelector(`[data-tab="${targetTabId}"]`);
+    if (activeButton) {
+      activeButton.classList.add('active');
+    }
+    
+    // 選択されたタブコンテンツにactiveクラスを追加
+    const activeContent = document.getElementById(targetTabId);
+    if (activeContent) {
+      activeContent.classList.add('active');
+    }
+  }
+
+  // タブボタンのクリックイベント
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetTab = button.getAttribute('data-tab');
+      switchTab(targetTab);
+    });
+  });
+
+  // 設定ボタンの状態を更新
+  function updateSettingsButtonState() {
+    const apiKey = apiKeyInput.value.trim();
+    const databaseId = databaseIdInput.value.trim();
+    const hasValidInputs = apiKey && databaseId;
+    
+    saveSettingsBtn.disabled = !hasValidInputs;
+  }
 
   // ストレージから設定を読み込み
   async function loadSettings() {
@@ -21,6 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (result.notionDatabaseId) {
         databaseIdInput.value = result.notionDatabaseId;
       }
+      updateSettingsButtonState();
     } catch (error) {
       showStatus('設定の読み込みに失敗しました', 'error');
     }
@@ -91,6 +130,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       statusDiv.style.display = 'none';
     }, 3000);
   }
+
+  // 設定入力フィールドの変更イベント
+  apiKeyInput.addEventListener('input', updateSettingsButtonState);
+  databaseIdInput.addEventListener('input', updateSettingsButtonState);
 
   // 設定の保存
   saveSettingsBtn.addEventListener('click', async () => {
