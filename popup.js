@@ -1,0 +1,129 @@
+// popup.js - ポップアップのメイン機能
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // DOM要素の取得
+  const apiKeyInput = document.getElementById('api-key');
+  const databaseIdInput = document.getElementById('database-id');
+  const saveSettingsBtn = document.getElementById('save-settings');
+  const pageTitleDiv = document.getElementById('page-title');
+  const pageUrlDiv = document.getElementById('page-url');
+  const tagsInput = document.getElementById('tags');
+  const savePageBtn = document.getElementById('save-page');
+  const statusDiv = document.getElementById('status');
+
+  // ストレージから設定を読み込み
+  async function loadSettings() {
+    try {
+      const result = await chrome.storage.local.get(['notionApiKey', 'notionDatabaseId']);
+      if (result.notionApiKey) {
+        apiKeyInput.value = result.notionApiKey;
+      }
+      if (result.notionDatabaseId) {
+        databaseIdInput.value = result.notionDatabaseId;
+      }
+    } catch (error) {
+      showStatus('設定の読み込みに失敗しました', 'error');
+    }
+  }
+
+  // 現在のページ情報を取得
+  async function loadPageInfo() {
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      const response = await chrome.tabs.sendMessage(tab.id, { action: 'getPageInfo' });
+      
+      if (response) {
+        pageTitleDiv.textContent = response.title;
+        pageUrlDiv.textContent = response.url;
+      }
+    } catch (error) {
+      pageTitleDiv.textContent = 'ページ情報を取得できませんでした';
+      pageUrlDiv.textContent = '';
+    }
+  }
+
+  // ステータスメッセージを表示
+  function showStatus(message, type = 'info') {
+    statusDiv.textContent = message;
+    statusDiv.className = `status ${type}`;
+    statusDiv.style.display = 'block';
+    
+    setTimeout(() => {
+      statusDiv.style.display = 'none';
+    }, 3000);
+  }
+
+  // 設定の保存
+  saveSettingsBtn.addEventListener('click', async () => {
+    const apiKey = apiKeyInput.value.trim();
+    const databaseId = databaseIdInput.value.trim();
+
+    if (!apiKey || !databaseId) {
+      showStatus('API KeyとDatabase IDの両方を入力してください', 'error');
+      return;
+    }
+
+    try {
+      await chrome.storage.local.set({
+        notionApiKey: apiKey,
+        notionDatabaseId: databaseId
+      });
+      showStatus('設定を保存しました', 'success');
+    } catch (error) {
+      showStatus('設定の保存に失敗しました', 'error');
+    }
+  });
+
+  // ページの保存
+  savePageBtn.addEventListener('click', async () => {
+    // 設定を確認
+    const result = await chrome.storage.local.get(['notionApiKey', 'notionDatabaseId']);
+    const apiKey = result.notionApiKey;
+    const databaseId = result.notionDatabaseId;
+
+    if (!apiKey || !databaseId) {
+      showStatus('まず設定でAPI KeyとDatabase IDを入力してください', 'error');
+      return;
+    }
+
+    // ページ情報を取得
+    const title = pageTitleDiv.textContent;
+    const url = pageUrlDiv.textContent;
+    const tags = tagsInput.value.trim();
+
+    if (!title || !url) {
+      showStatus('ページ情報が取得できませんでした', 'error');
+      return;
+    }
+
+    // 保存処理
+    savePageBtn.disabled = true;
+    savePageBtn.textContent = '保存中...';
+    showStatus('Notionに保存しています...', 'info');
+
+    try {
+      const response = await chrome.runtime.sendMessage({
+        action: 'saveToNotion',
+        pageData: { title, url, tags },
+        apiKey,
+        databaseId
+      });
+
+      if (response.success) {
+        showStatus('Notionに保存しました！', 'success');
+        tagsInput.value = ''; // タグ入力をクリア
+      } else {
+        showStatus(`保存に失敗しました: ${response.error}`, 'error');
+      }
+    } catch (error) {
+      showStatus('保存中にエラーが発生しました', 'error');
+    } finally {
+      savePageBtn.disabled = false;
+      savePageBtn.textContent = 'Notionに保存';
+    }
+  });
+
+  // 初期化
+  await loadSettings();
+  await loadPageInfo();
+});
