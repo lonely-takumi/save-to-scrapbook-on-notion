@@ -40,6 +40,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  // 設定ボタンの状態を更新
+  function updateSettingsButtonState() {
+    const apiKey = apiKeyInput.value.trim();
+    const databaseId = databaseIdInput.value.trim();
+    const hasValidInputs = apiKey && databaseId;
+    
+    saveSettingsBtn.disabled = !hasValidInputs;
+  }
+
   // ストレージから設定を読み込み
   async function loadSettings() {
     try {
@@ -50,6 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (result.notionDatabaseId) {
         databaseIdInput.value = result.notionDatabaseId;
       }
+      updateSettingsButtonState();
     } catch (error) {
       showStatus('設定の読み込みに失敗しました', 'error');
     }
@@ -120,6 +130,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       statusDiv.style.display = 'none';
     }, 3000);
   }
+
+  // 設定入力フィールドの変更イベント
+  apiKeyInput.addEventListener('input', updateSettingsButtonState);
+  databaseIdInput.addEventListener('input', updateSettingsButtonState);
 
   // 設定の保存
   saveSettingsBtn.addEventListener('click', async () => {
