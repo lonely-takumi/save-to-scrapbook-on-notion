@@ -30,13 +30,52 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function loadPageInfo() {
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      const response = await chrome.tabs.sendMessage(tab.id, { action: 'getPageInfo' });
       
-      if (response) {
-        pageTitleDiv.textContent = response.title;
-        pageUrlDiv.textContent = response.url;
+      // 特別なページ（chrome://, chrome-extension://など）の場合はフォールバック
+      if (tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://') || tab.url.startsWith('moz-extension://')) {
+        pageTitleDiv.textContent = tab.title || 'タイトル取得不可';
+        pageUrlDiv.textContent = tab.url || 'URL取得不可';
+        return;
       }
+      
+      // コンテンツスクリプトからページ情報を取得を試行
+      try {
+        const response = await chrome.tabs.sendMessage(tab.id, { action: 'getPageInfo' });
+        if (response && response.title && response.url) {
+          pageTitleDiv.textContent = response.title;
+          pageUrlDiv.textContent = response.url;
+          return;
+        }
+      } catch (messageError) {
+        console.log('コンテンツスクリプトからの取得に失敗:', messageError);
+      }
+      
+      // フォールバック: chrome.tabs.executeScript を使用
+      try {
+        const results = await chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          function: () => ({
+            title: document.title || '',
+            url: window.location.href
+          })
+        });
+        
+        if (results && results[0] && results[0].result) {
+          const result = results[0].result;
+          pageTitleDiv.textContent = result.title || tab.title || 'タイトル取得不可';
+          pageUrlDiv.textContent = result.url || tab.url || 'URL取得不可';
+          return;
+        }
+      } catch (scriptError) {
+        console.log('スクリプト実行からの取得に失敗:', scriptError);
+      }
+      
+      // 最終フォールバック: タブ情報を使用
+      pageTitleDiv.textContent = tab.title || 'タイトル取得不可';
+      pageUrlDiv.textContent = tab.url || 'URL取得不可';
+      
     } catch (error) {
+      console.error('ページ情報取得エラー:', error);
       pageTitleDiv.textContent = 'ページ情報を取得できませんでした';
       pageUrlDiv.textContent = '';
     }

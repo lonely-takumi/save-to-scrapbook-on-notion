@@ -5,7 +5,8 @@
   "description": "WebページをNotionのスクラップブックに保存するChrome拡張機能",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "scripting"
   ],
   "host_permissions": [
     "https://api.notion.com/*"
