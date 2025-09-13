@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Save to Notion</h1>
+    </div>
+    
+    <div id="settings-section" class="section">
+      <h2>設定</h2>
+      <div class="form-group">
+        <label for="api-key">Notion API Key:</label>
+        <input type="password" id="api-key" placeholder="secret_...">
+      </div>
+      <div class="form-group">
+        <label for="database-id">Database ID:</label>
+        <input type="text" id="database-id" placeholder="データベースID">
+      </div>
+      <button id="save-settings" class="btn btn-secondary">設定を保存</button>
+    </div>
+
+    <div id="main-section" class="section">
+      <h2>ページを保存</h2>
+      <div class="page-info">
+        <div class="form-group">
+          <label>タイトル:</label>
+          <div id="page-title" class="page-data"></div>
+        </div>
+        <div class="form-group">
+          <label>URL:</label>
+          <div id="page-url" class="page-data"></div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="tags">タグ (改行区切り):</label>
+        <textarea id="tags" placeholder="技術ブログ&#10;ニュース" rows="3"></textarea>
+      </div>
+      
+      <button id="save-page" class="btn btn-primary">Notionに保存</button>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
