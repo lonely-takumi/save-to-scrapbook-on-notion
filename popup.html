@@ -10,7 +10,12 @@
       <h1>Save to Notion</h1>
     </div>
     
-    <div id="settings-section" class="section">
+    <div class="tabs">
+      <button class="tab-button active" data-tab="main-section">Notionに保存</button>
+      <button class="tab-button" data-tab="settings-section">設定</button>
+    </div>
+    
+    <div id="settings-section" class="section tab-content">
       <h2>設定</h2>
       <div class="form-group">
         <label for="api-key">Notion API Key:</label>
@@ -23,7 +28,7 @@
       <button id="save-settings" class="btn btn-secondary">設定を保存</button>
     </div>
 
-    <div id="main-section" class="section">
+    <div id="main-section" class="section tab-content active">
       <h2>ページを保存</h2>
       <div class="page-info">
         <div class="form-group">

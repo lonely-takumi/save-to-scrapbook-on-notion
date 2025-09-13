@@ -10,6 +10,35 @@ document.addEventListener('DOMContentLoaded', async () => {
   const tagsInput = document.getElementById('tags');
   const savePageBtn = document.getElementById('save-page');
   const statusDiv = document.getElementById('status');
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  // タブ切り替え機能
+  function switchTab(targetTabId) {
+    // すべてのタブボタンとコンテンツから active クラスを削除
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+    tabContents.forEach(content => content.classList.remove('active'));
+    
+    // 選択されたタブボタンにactiveクラスを追加
+    const activeButton = document.querySelector(`[data-tab="${targetTabId}"]`);
+    if (activeButton) {
+      activeButton.classList.add('active');
+    }
+    
+    // 選択されたタブコンテンツにactiveクラスを追加
+    const activeContent = document.getElementById(targetTabId);
+    if (activeContent) {
+      activeContent.classList.add('active');
+    }
+  }
+
+  // タブボタンのクリックイベント
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const targetTab = button.getAttribute('data-tab');
+      switchTab(targetTab);
+    });
+  });
 
   // ストレージから設定を読み込み
   async function loadSettings() {
