@@ -1,7 +1,7 @@
 name: Upload Artifact
 
 on: 
-  workflow_dispatch
+	push
 
 jobs:
   upload-artifact:
