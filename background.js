@@ -7,7 +7,7 @@ chrome.runtime.onInstalled.addListener(() => {
 
 // Notion APIにページを保存する関数
 async function saveToNotion(pageData, apiKey, databaseId) {
-  const { title, url, tags } = pageData;
+  const { title, url, source, tags } = pageData;
   
   // タグを配列に変換（改行区切り）
   const tagArray = tags
@@ -26,7 +26,7 @@ async function saveToNotion(pageData, apiKey, databaseId) {
         multi_select: tagArray
       },
       "ソース": {
-        select: { name: "web" }
+        select: { name: source }
       },
       "タイトル": {
         title: [{ text: { content: title } }]

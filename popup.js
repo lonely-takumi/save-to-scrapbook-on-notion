@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const saveSettingsBtn = document.getElementById('save-settings');
   const pageTitleDiv = document.getElementById('page-title');
   const pageUrlDiv = document.getElementById('page-url');
+  const sourceSelect = document.getElementById('source');
   const tagsInput = document.getElementById('tags');
   const savePageBtn = document.getElementById('save-page');
   const statusDiv = document.getElementById('status');
@@ -171,6 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ページ情報を取得
     const title = pageTitleDiv.textContent;
     const url = pageUrlDiv.textContent;
+    const source = sourceSelect.value;
     const tags = tagsInput.value.trim();
 
     if (!title || !url) {
@@ -186,7 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
       const response = await chrome.runtime.sendMessage({
         action: 'saveToNotion',
-        pageData: { title, url, tags },
+        pageData: { title, url, source, tags },
         apiKey,
         databaseId
       });
