@@ -1,7 +1,7 @@
 name: Upload Artifact
 
 on:
-  push:
+  workflow_dispatch
 
 jobs:
   upload-artifact:
@@ -9,9 +9,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Confirm files
-        run: pwd | ls
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
