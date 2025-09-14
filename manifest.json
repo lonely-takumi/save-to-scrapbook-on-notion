@@ -1,5 +1,5 @@
 {
-  "manifest_version": 4,
+  "manifest_version": 3,
   "name": "Save to Scrapbook on Notion",
   "version": "1.0.0",
   "description": "WebページをNotionのスクラップブックに保存するChrome拡張機能",
