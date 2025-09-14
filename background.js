@@ -26,7 +26,7 @@ async function saveToNotion(pageData, apiKey, databaseId) {
         multi_select: tagArray
       },
       "ソース": {
-        select: { name: source || "web" }
+        select: { name: source }
       },
       "タイトル": {
         title: [{ text: { content: title } }]
