@@ -1,7 +1,7 @@
 name: Upload Artifact
 
-on: 
-	push
+on:
+  push:
 
 jobs:
   upload-artifact:
