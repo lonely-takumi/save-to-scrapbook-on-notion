@@ -9,6 +9,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Confirm files
+        run: pwd
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
