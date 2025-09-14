@@ -31,8 +31,9 @@ WebページをNotionのスクラップブックに保存するChrome拡張機�
 
 1. 保存したいWebページを開く
 2. 拡張機能のアイコンをクリック
-3. 必要に応じてタグを入力（カンマ区切り）
-4. 「Notionに保存」をクリック
+3. ソースを選択
+4. 必要に応じてタグを入力（改行区切り）
+5. 「Notionに保存」をクリック
 
 ## Notionデータベースの設定
 
@@ -50,17 +51,36 @@ WebページをNotionのスクラップブックに保存するChrome拡張機�
 ```json
 {
    "parent":{
-      "database_id": "{データベースID}"
+      "database_id":"{データベースID}"
    },
    "properties":{
       "URL":{
-         "url": "{webページのURL}"
+         "url":"{webページのURL}"
       },
       "タグ":{
-         "multi_select": [{"name":"技術ブログ"}, {"name":"ニュース"}]
+         "multi_select":[
+            {
+               "name":"{タグA}"
+            },
+            {
+               "name":"{タグB}"
+            }
+         ]
       },
-      "ソース":{"select":{"name":"web"}},
-      "タイトル":{"title":[{"text":{"content":"{webページのタイトル}"}}]}
+      "ソース":{
+         "select":{
+            "name":"{web or nikkei}"
+         }
+      },
+      "タイトル":{
+         "title":[
+            {
+               "text":{
+                  "content":"{webページのタイトル}"
+               }
+            }
+         ]
+      }
    }
 }
 ```

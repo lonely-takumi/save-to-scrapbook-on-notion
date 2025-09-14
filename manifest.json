@@ -1,5 +1,5 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 4,
   "name": "Save to Scrapbook on Notion",
   "version": "1.0.0",
   "description": "WebページをNotionのスクラップブックに保存するChrome拡張機能",
@@ -25,8 +25,8 @@
     "service_worker": "background.js"
   },
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "icon/icon16.png",
+    "48": "icon/icon48.png",
+    "128": "icon/icon128.png"
   }
 }
