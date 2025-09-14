@@ -14,3 +14,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: save-to-scrapbook-on-notion
+          path: save-to-scrapbook-on-notion
